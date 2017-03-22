@@ -31,7 +31,7 @@ public class SplashScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         Label.LabelStyle style = new Label.LabelStyle();
-        style.font = app.font24;
+        style.font = app.logoFont;
         final Label companyLabel = new Label("Zuzu Studios", style);
         companyLabel.setPosition(stage.getWidth() / 2, 128, Align.center);
         companyLabel.setVisible(false);
@@ -59,12 +59,14 @@ public class SplashScreen implements Screen {
             }
         };
 
-        companyLogo = new Image(new Texture(Gdx.files.internal("img/zuzu.png")));
+        companyLogo = new Image(app.assets.get("img/zuzu.png", Texture.class));
         companyLogo.setOrigin(companyLogo.getWidth() / 2, companyLogo.getHeight() / 2);
         companyLogo.setPosition(stage.getWidth() / 2 - companyLogo.getWidth() / 2, stage.getHeight() / 2 - companyLogo.getHeight() / 2);
         companyLogo.addAction(sequence(
                 alpha(0f),
-                fadeIn(0.75f, Interpolation.pow2),
+                delay(0.5f),
+                fadeIn(1f, Interpolation.pow2),
+                delay(0.25f),
                 run(showLabel),
                 delay(2.5f),
                 run(fadeOutLabel),

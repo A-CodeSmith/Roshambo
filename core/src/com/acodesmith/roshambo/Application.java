@@ -1,5 +1,6 @@
 package com.acodesmith.roshambo;
 
+import com.acodesmith.roshambo.screens.LoadingScreen;
 import com.acodesmith.roshambo.screens.SplashScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -22,10 +23,11 @@ public class Application extends Game {
 	public OrthographicCamera camera;
 	public SpriteBatch batch;
 
-	public BitmapFont font24;
+	public BitmapFont logoFont;
 
 	public AssetManager assets;
 
+	public LoadingScreen loadingScreen;
 	public SplashScreen splashScreen;
 	
 	@Override
@@ -37,8 +39,9 @@ public class Application extends Game {
 		assets = new AssetManager();
 		initFonts();
 
+		loadingScreen = new LoadingScreen(this);
 		splashScreen = new SplashScreen(this);
-		this.setScreen(splashScreen);
+		this.setScreen(loadingScreen);
 	}
 
 	private void initFonts() {
@@ -47,7 +50,7 @@ public class Application extends Game {
 
 		params.size = 36;
 		params.color = Color.WHITE;
-		font24 = generator.generateFont(params);
+		logoFont = generator.generateFont(params);
 	}
 
 	@Override
