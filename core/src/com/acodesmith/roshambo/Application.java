@@ -1,6 +1,7 @@
 package com.acodesmith.roshambo;
 
 import com.acodesmith.roshambo.screens.LoadingScreen;
+import com.acodesmith.roshambo.screens.MainMenuScreen;
 import com.acodesmith.roshambo.screens.SplashScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -24,11 +25,13 @@ public class Application extends Game {
 	public SpriteBatch batch;
 
 	public BitmapFont logoFont;
+	public BitmapFont titleFont;
 
 	public AssetManager assets;
 
 	public LoadingScreen loadingScreen;
 	public SplashScreen splashScreen;
+	public MainMenuScreen mainMenuScreen;
 	
 	@Override
 	public void create () {
@@ -41,16 +44,24 @@ public class Application extends Game {
 
 		loadingScreen = new LoadingScreen(this);
 		splashScreen = new SplashScreen(this);
+		mainMenuScreen = new MainMenuScreen(this);
 		this.setScreen(loadingScreen);
 	}
 
 	private void initFonts() {
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/KGShePersisted.ttf"));
-		FreeTypeFontGenerator.FreeTypeFontParameter params = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		FreeTypeFontGenerator logoFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/KGShePersisted.ttf"));
+		FreeTypeFontGenerator.FreeTypeFontParameter logoFontParams = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
-		params.size = 36;
-		params.color = Color.WHITE;
-		logoFont = generator.generateFont(params);
+		logoFontParams.size = 36;
+		logoFontParams.color = Color.WHITE;
+		logoFont = logoFontGenerator.generateFont(logoFontParams);
+
+		FreeTypeFontGenerator titleFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Meatloaf.ttf"));
+		FreeTypeFontGenerator.FreeTypeFontParameter titleFontParams = new FreeTypeFontGenerator.FreeTypeFontParameter();
+
+		titleFontParams.size = 256;
+		titleFontParams.color = Color.WHITE;
+		titleFont = titleFontGenerator.generateFont(titleFontParams);
 	}
 
 	@Override
