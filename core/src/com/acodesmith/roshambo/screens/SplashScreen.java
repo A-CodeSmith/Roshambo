@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -19,8 +20,6 @@ public class SplashScreen implements Screen {
     private final Application app;
     private Stage stage;
 
-    private Image companyLogo;
-
     public SplashScreen(final Application app) {
         this.app = app;
         this.stage = new Stage(new FitViewport(Application.VIRTUAL_WIDTH, Application.VIRTUAL_HEIGHT, app.camera));
@@ -30,38 +29,34 @@ public class SplashScreen implements Screen {
     public void show() {
         Gdx.input.setInputProcessor(stage);
 
+        final Image companyLogo = new Image(app.assets.get("img/zuzu.png", Texture.class));
+        companyLogo.setPosition(stage.getWidth() / 2 - companyLogo.getWidth() / 2, stage.getHeight() / 2 - companyLogo.getHeight() / 2 + 50);
+
         Label.LabelStyle style = new Label.LabelStyle();
-        style.font = app.logoFont;
+        style.font = app.assets.get("fonts/KGShePersisted.ttf");
         final Label companyLabel = new Label("Zuzu Studios", style);
-        companyLabel.setPosition(stage.getWidth() / 2, 128, Align.center);
+        companyLabel.setPosition(stage.getWidth() / 2, companyLogo.getY() - 50, Align.center);
         companyLabel.setVisible(false);
 
-        Runnable showLabel = new Runnable() {
+        final Runnable showLabel = new Runnable() {
             @Override
             public void run() {
                 companyLabel.setVisible(true);
             }
         };
-
         final Runnable fadeOutLabel = new Runnable() {
             @Override
             public void run() {
                 companyLabel.addAction(fadeOut(0.75f));
             }
         };
-
-        stage.addActor(companyLabel);
-
-        Runnable transitionScreen = new Runnable() {
+        final Runnable transitionScreen = new Runnable() {
             @Override
             public void run() {
                 app.setScreen(app.mainMenuScreen);
             }
         };
 
-        companyLogo = new Image(app.assets.get("img/zuzu.png", Texture.class));
-        companyLogo.setOrigin(companyLogo.getWidth() / 2, companyLogo.getHeight() / 2);
-        companyLogo.setPosition(stage.getWidth() / 2 - companyLogo.getWidth() / 2, stage.getHeight() / 2 - companyLogo.getHeight() / 2);
         companyLogo.addAction(sequence(
                 alpha(0f),
                 delay(0.5f),
@@ -74,6 +69,7 @@ public class SplashScreen implements Screen {
                 run(transitionScreen)));
 
         stage.addActor(companyLogo);
+        stage.addActor(companyLabel);
     }
 
     @Override

@@ -18,17 +18,12 @@ public class Application extends Game {
 
 	public static final String TITLE = "Roshambo";
 	public static final float VERSION = 0.1f;
-	public static final int VIRTUAL_WIDTH = 960;
-	public static final int VIRTUAL_HEIGHT = 600;
+	public static final int VIRTUAL_WIDTH = 1280;
+	public static final int VIRTUAL_HEIGHT = 720;
 
 	public OrthographicCamera camera;
 	public SpriteBatch batch;
-
-	public BitmapFont logoFont;
-	public BitmapFont titleFont;
-
 	public AssetManager assets;
-
 	public LoadingScreen loadingScreen;
 	public SplashScreen splashScreen;
 	public MainMenuScreen mainMenuScreen;
@@ -38,30 +33,11 @@ public class Application extends Game {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
 		batch = new SpriteBatch();
-
 		assets = new AssetManager();
-		initFonts();
-
 		loadingScreen = new LoadingScreen(this);
 		splashScreen = new SplashScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
 		this.setScreen(loadingScreen);
-	}
-
-	private void initFonts() {
-		FreeTypeFontGenerator logoFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/KGShePersisted.ttf"));
-		FreeTypeFontGenerator.FreeTypeFontParameter logoFontParams = new FreeTypeFontGenerator.FreeTypeFontParameter();
-
-		logoFontParams.size = 36;
-		logoFontParams.color = Color.WHITE;
-		logoFont = logoFontGenerator.generateFont(logoFontParams);
-
-		FreeTypeFontGenerator titleFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Meatloaf.ttf"));
-		FreeTypeFontGenerator.FreeTypeFontParameter titleFontParams = new FreeTypeFontGenerator.FreeTypeFontParameter();
-
-		titleFontParams.size = 256;
-		titleFontParams.color = Color.WHITE;
-		titleFont = titleFontGenerator.generateFont(titleFontParams);
 	}
 
 	@Override
