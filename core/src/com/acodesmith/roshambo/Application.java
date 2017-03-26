@@ -2,6 +2,7 @@ package com.acodesmith.roshambo;
 
 import com.acodesmith.roshambo.screens.LoadingScreen;
 import com.acodesmith.roshambo.screens.MainMenuScreen;
+import com.acodesmith.roshambo.screens.PlayScreen;
 import com.acodesmith.roshambo.screens.SplashScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -27,6 +28,7 @@ public class Application extends Game {
 	public LoadingScreen loadingScreen;
 	public SplashScreen splashScreen;
 	public MainMenuScreen mainMenuScreen;
+	public PlayScreen playScreen;
 	
 	@Override
 	public void create () {
@@ -37,6 +39,7 @@ public class Application extends Game {
 		loadingScreen = new LoadingScreen(this);
 		splashScreen = new SplashScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);
+		playScreen = new PlayScreen(this);
 		this.setScreen(loadingScreen);
 	}
 
