@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -21,7 +22,7 @@ import java.util.Random;
  */
 public class PlayScreen implements Screen {
 
-    private enum Shape {
+    private enum HandShape {
         ROCK,
         PAPER,
         SCISSORS
@@ -35,7 +36,8 @@ public class PlayScreen implements Screen {
     private final Application app;
     private final Stage stage;
 
-    private Shape userChoice;
+    private Image backgroundImage;
+    private HandShape userChoice;
 
     public PlayScreen(Application app) {
         this.app = app;
@@ -46,7 +48,7 @@ public class PlayScreen implements Screen {
     public void show() {
         Gdx.input.setInputProcessor(stage);
 
-        final Image backgroundImage = new Image(app.assets.get("img/bg.png", Texture.class));
+        backgroundImage = new Image(app.assets.get("img/bg.png", Texture.class));
         backgroundImage.setPosition(stage.getWidth()/2f - backgroundImage.getWidth()/2, 0);
 
         final Label.LabelStyle chooseStyle = new Label.LabelStyle();
@@ -54,29 +56,29 @@ public class PlayScreen implements Screen {
         final Label chooseLabel = new Label("Choose:", chooseStyle);
         chooseLabel.setPosition(stage.getWidth()/2f, stage.getHeight()*0.85f, Align.center);
 
-        // 10% 20% 10% 20% 10% 20% 10%
-        final TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("img/play.atlas"));
+        final TextureAtlas atlas = app.assets.get("img/play.atlas");
         final ClickListener onShapeClick = new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                userChoice = (Shape)event.getListenerActor().getUserObject();
+                userChoice = (HandShape)event.getListenerActor().getUserObject();
                 showResult();
             }
         };
 
+        // 10% 20% 10% 20% 10% 20% 10%
         final Image rockImage = new Image(atlas.findRegion("rock"));
         rockImage.setPosition(stage.getWidth()*0.1f, stage.getHeight()*0.25f);
-        rockImage.setUserObject(Shape.ROCK);
+        rockImage.setUserObject(HandShape.ROCK);
         rockImage.addListener(onShapeClick);
 
         final Image paperImage = new Image(atlas.findRegion("paper"));
         paperImage.setPosition(stage.getWidth()*0.4f, stage.getHeight()*0.25f);
-        paperImage.setUserObject(Shape.PAPER);
+        paperImage.setUserObject(HandShape.PAPER);
         paperImage.addListener(onShapeClick);
 
         final Image scissorsImage = new Image(atlas.findRegion("scissors"));
         scissorsImage.setPosition(stage.getWidth()*0.7f, stage.getHeight()*0.25f);
-        scissorsImage.setUserObject(Shape.SCISSORS);
+        scissorsImage.setUserObject(HandShape.SCISSORS);
         scissorsImage.addListener(onShapeClick);
 
         stage.addActor(backgroundImage);
@@ -88,29 +90,73 @@ public class PlayScreen implements Screen {
 
     private void showResult() {
         Random rng = new Random();
-        Shape cpuChoice = Shape.values()[rng.nextInt(3)];
+        HandShape cpuChoice = HandShape.values()[rng.nextInt(3)];
 
         MatchResult result = MatchResult.DRAW;
         switch (userChoice)
         {
             case ROCK:
-                if (cpuChoice == Shape.ROCK) result = MatchResult.DRAW;
-                if (cpuChoice == Shape.PAPER) result = MatchResult.DEFEAT;
-                if (cpuChoice == Shape.SCISSORS) result = MatchResult.VICTORY;
+                if (cpuChoice == HandShape.ROCK) result = MatchResult.DRAW;
+                if (cpuChoice == HandShape.PAPER) result = MatchResult.DEFEAT;
+                if (cpuChoice == HandShape.SCISSORS) result = MatchResult.VICTORY;
                 break;
             case PAPER:
-                if (cpuChoice == Shape.ROCK) result = MatchResult.VICTORY;
-                if (cpuChoice == Shape.PAPER) result = MatchResult.DRAW;
-                if (cpuChoice == Shape.SCISSORS) result = MatchResult.DEFEAT;
+                if (cpuChoice == HandShape.ROCK) result = MatchResult.VICTORY;
+                if (cpuChoice == HandShape.PAPER) result = MatchResult.DRAW;
+                if (cpuChoice == HandShape.SCISSORS) result = MatchResult.DEFEAT;
                 break;
             case SCISSORS:
-                if (cpuChoice == Shape.ROCK) result = MatchResult.DEFEAT;
-                if (cpuChoice == Shape.PAPER) result = MatchResult.VICTORY;
-                if (cpuChoice == Shape.SCISSORS) result = MatchResult.DRAW;
+                if (cpuChoice == HandShape.ROCK) result = MatchResult.DEFEAT;
+                if (cpuChoice == HandShape.PAPER) result = MatchResult.VICTORY;
+                if (cpuChoice == HandShape.SCISSORS) result = MatchResult.DRAW;
                 break;
         }
 
         System.out.println(String.format("User %s - Cpu %s - %s", userChoice, cpuChoice, result));
+
+        String resultText = "";
+        switch (result)
+        {
+            case VICTORY:
+                resultText = "VICTORY!";
+                break;
+            case DRAW:
+                resultText = "DRAW!";
+                break;
+            case DEFEAT:
+                resultText = "DEFEAT!";
+                break;
+        }
+
+        stage.clear();
+
+        final Label resultLabel = new Label(resultText,
+                new Label.LabelStyle(app.assets.get("fonts/Meatloaf.ttf", BitmapFont.class), null));
+        resultLabel.setPosition(stage.getWidth()/2, stage.getHeight()*0.7f, Align.center);
+
+        final Label playAgainLabel = new Label("Play Again",
+                new Label.LabelStyle(app.assets.get("fonts/GeosansLight.ttf", BitmapFont.class), null));
+        playAgainLabel.setPosition(stage.getWidth()/2, stage.getHeight()*0.45f, Align.center);
+        playAgainLabel.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                app.setScreen(app.playScreen);
+            }
+        });
+
+        final Label quitToMenuLabel = new Label("Quit to Menu",
+                new Label.LabelStyle(app.assets.get("fonts/GeosansLight.ttf", BitmapFont.class), null));
+        quitToMenuLabel.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                app.setScreen(app.mainMenuScreen);
+            }
+        });
+
+        stage.addActor(backgroundImage);
+        stage.addActor(resultLabel);
+        stage.addActor(playAgainLabel);
+        stage.addActor(quitToMenuLabel);
     }
 
     @Override

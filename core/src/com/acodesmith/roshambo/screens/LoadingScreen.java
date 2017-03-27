@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
@@ -77,6 +78,7 @@ public class LoadingScreen implements Screen {
     private void queueImages() {
         app.assets.load("img/zuzu.png", Texture.class);
         app.assets.load("img/bg.png", Texture.class);
+        app.assets.load("img/play.atlas", TextureAtlas.class);
     }
 
     private void update(float delta) {
