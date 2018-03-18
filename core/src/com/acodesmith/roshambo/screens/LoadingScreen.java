@@ -1,6 +1,7 @@
 package com.acodesmith.roshambo.screens;
 
 import com.acodesmith.roshambo.Application;
+import com.acodesmith.roshambo.AssetManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
@@ -25,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 public class LoadingScreen implements Screen {
 
     private final Application app;
+    private final AssetManager assets;
 
     private ShapeRenderer shapeRenderer;
     private float progress;
@@ -32,6 +34,7 @@ public class LoadingScreen implements Screen {
     public LoadingScreen(Application app)
     {
         this.app = app;
+        this.assets = AssetManager.getInstance();
         this.shapeRenderer = new ShapeRenderer();
     }
 
@@ -49,14 +52,14 @@ public class LoadingScreen implements Screen {
 
     private void queueFonts() {
         FileHandleResolver resolver = new InternalFileHandleResolver();
-        app.assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
-        app.assets.setLoader(BitmapFont.class, new FreetypeFontLoader(resolver));
+        assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
+        assets.setLoader(BitmapFont.class, new FreetypeFontLoader(resolver));
 
         FreetypeFontLoader.FreeTypeFontLoaderParameter logoParams = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
         logoParams.fontFileName = "fonts/KGShePersisted.ttf";
         logoParams.fontParameters.size = 48;
         logoParams.fontParameters.color = Color.WHITE;
-        app.assets.load("fonts/KGShePersisted.ttf", BitmapFont.class, logoParams);
+        assets.load("fonts/KGShePersisted.ttf", BitmapFont.class, logoParams);
 
         FreetypeFontLoader.FreeTypeFontLoaderParameter titleParams = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
         titleParams.fontFileName = "fonts/Meatloaf.ttf";
@@ -64,7 +67,7 @@ public class LoadingScreen implements Screen {
         titleParams.fontParameters.color = Color.WHITE;
         titleParams.fontParameters.borderWidth = 5f;
         titleParams.fontParameters.borderColor = Color.BLACK;
-        app.assets.load("fonts/Meatloaf.ttf", BitmapFont.class, titleParams);
+        assets.load("fonts/Meatloaf.ttf", BitmapFont.class, titleParams);
 
         FreetypeFontLoader.FreeTypeFontLoaderParameter mainParams = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
         mainParams.fontFileName = "fonts/GeosansLight.ttf";
@@ -72,18 +75,18 @@ public class LoadingScreen implements Screen {
         mainParams.fontParameters.color = Color.WHITE;
         mainParams.fontParameters.borderWidth = 2f;
         mainParams.fontParameters.borderColor = Color.BLACK;
-        app.assets.load("fonts/GeosansLight.ttf", BitmapFont.class, mainParams);
+        assets.load("fonts/GeosansLight.ttf", BitmapFont.class, mainParams);
     }
 
     private void queueImages() {
-        app.assets.load("img/zuzu.png", Texture.class);
-        app.assets.load("img/bg.png", Texture.class);
-        app.assets.load("img/play.atlas", TextureAtlas.class);
+        assets.load("img/zuzu.png", Texture.class);
+        assets.load("img/bg.png", Texture.class);
+        assets.load("img/play.atlas", TextureAtlas.class);
     }
 
     private void update(float delta) {
-        progress = MathUtils.lerp(progress, app.assets.getProgress(), .1f);
-        if (app.assets.update() && progress >= app.assets.getProgress() - 0.001f) {
+        progress = MathUtils.lerp(progress, assets.getProgress(), .1f);
+        if (assets.update() && progress >= assets.getProgress() - 0.001f) {
             app.setScreen(app.splashScreen);
         }
     }

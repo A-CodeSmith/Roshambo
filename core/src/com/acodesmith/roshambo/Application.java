@@ -18,13 +18,12 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 public class Application extends Game {
 
 	public static final String TITLE = "Roshambo";
-	public static final float VERSION = 0.1f;
+	public static final float VERSION = 1.0f;
 	public static final int VIRTUAL_WIDTH = 1280;
 	public static final int VIRTUAL_HEIGHT = 720;
 
 	public OrthographicCamera camera;
 	public SpriteBatch batch;
-	public AssetManager assets;
 	public LoadingScreen loadingScreen;
 	public SplashScreen splashScreen;
 	public MainMenuScreen mainMenuScreen;
@@ -35,7 +34,6 @@ public class Application extends Game {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
 		batch = new SpriteBatch();
-		assets = new AssetManager();
 		loadingScreen = new LoadingScreen(this);
 		splashScreen = new SplashScreen(this);
 		mainMenuScreen = new MainMenuScreen(this);

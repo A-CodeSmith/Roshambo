@@ -1,8 +1,10 @@
 package com.acodesmith.roshambo.screens;
 
 import com.acodesmith.roshambo.Application;
+import com.acodesmith.roshambo.AssetManager;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -20,6 +22,8 @@ public class SplashScreen implements Screen {
     private final Application app;
     private Stage stage;
 
+    private Sound logoSound;
+
     public SplashScreen(final Application app) {
         this.app = app;
         this.stage = new Stage(new FitViewport(Application.VIRTUAL_WIDTH, Application.VIRTUAL_HEIGHT, app.camera));
@@ -29,11 +33,13 @@ public class SplashScreen implements Screen {
     public void show() {
         Gdx.input.setInputProcessor(stage);
 
-        final Image companyLogo = new Image(app.assets.get("img/zuzu.png", Texture.class));
+        logoSound = Gdx.audio.newSound(Gdx.files.internal("sound/coin.ogg"));
+
+        final Image companyLogo = new Image(AssetManager.getInstance().getTexture("img/zuzu.png"));
         companyLogo.setPosition(stage.getWidth() / 2 - companyLogo.getWidth() / 2, stage.getHeight() / 2 - companyLogo.getHeight() / 2 + 50);
 
         Label.LabelStyle style = new Label.LabelStyle();
-        style.font = app.assets.get("fonts/KGShePersisted.ttf");
+        style.font = AssetManager.getInstance().getFont("fonts/KGShePersisted.ttf");
         final Label companyLabel = new Label("Zuzu Studios", style);
         companyLabel.setPosition(stage.getWidth() / 2, companyLogo.getY() - 50, Align.center);
         companyLabel.setVisible(false);
@@ -63,6 +69,12 @@ public class SplashScreen implements Screen {
                 fadeIn(1f, Interpolation.pow2),
                 delay(0.25f),
                 run(showLabel),
+                run(new Runnable() {
+                    @Override
+                    public void run() {
+                        logoSound.play();
+                    }
+                }),
                 delay(2.5f),
                 run(fadeOutLabel),
                 fadeOut(0.75f),
