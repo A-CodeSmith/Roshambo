@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
@@ -26,28 +26,22 @@ public class SplashScreen extends BaseScreen {
     public void show()
     {
         super.show();
-        int yOffset = 50;
 
         companyLogo = new Image(app.Assets.<Texture>get("img/zuzu.png"));
-        companyLogo.setPosition(
-                (getWidth() - companyLogo.getWidth())/2,
-                (getHeight() - companyLogo.getHeight())/2 + yOffset
-        );
         companyLogo.setVisible(false);
 
-        companyLabel = new Label(
-                "Zuzu Studios",
-                new LabelStyle(app.Assets.get("fonts/KGShePersisted.ttf"), null)
-        );
-        companyLabel.setPosition(
-                getWidth()/2,
-                companyLogo.getY() -yOffset,
-                Align.center
-        );
+        LabelStyle labelStyle = new LabelStyle(app.Assets.get("fonts/KGShePersisted.ttf"), null);
+        companyLabel = new Label("Zuzu Studios", labelStyle);
         companyLabel.setVisible(false);
 
-        addActor(companyLogo);
-        addActor(companyLabel);
+        Table table = new Table();
+        table.setFillParent(true);
+        table.center();
+        table.add(companyLogo);
+        table.row();
+        table.add(companyLabel);
+
+        addActor(table);
         addAction(sequence(
                 delay(0.5f),
                 run(this::showCompanyLogo),
