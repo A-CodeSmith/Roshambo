@@ -1,7 +1,5 @@
 package com.acodesmith.roshambo.cards;
 
-import com.acodesmith.roshambo.Application;
-
 public class RockCard extends Card
 {
     private static final String name = "rock";

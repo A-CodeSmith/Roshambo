@@ -1,21 +1,28 @@
 package com.acodesmith.roshambo.cards;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Random;
 
 public class CardFactory
 {
-    private static Map<String, Class<? extends Card>> registeredClasses = new LinkedHashMap<String, Class<? extends Card>>();
+    private static Map<String, Class<? extends Card>> registeredClasses = new LinkedHashMap<>();
 
-    public static Card Create(String name) throws InstantiationException, IllegalAccessException
+    public static Card Create(String name)
     {
-        Class<? extends Card> classType = registeredClasses.get(name);
-        return (classType == null) ? null : classType.newInstance();
+        try
+        {
+            Class<? extends Card> classType = registeredClasses.get(name);
+            return classType.newInstance();
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
     }
 
-    public static Card CreateRandom() throws InstantiationException, IllegalAccessException {
+    public static Card CreateRandom()
+    {
         int count = registeredClasses.size();
         int randomIndex = (new Random()).nextInt(count);
         String[] keys = registeredClasses.keySet().toArray(new String[count]);

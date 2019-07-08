@@ -1,7 +1,6 @@
 package com.acodesmith.roshambo.cards;
 
 import com.acodesmith.roshambo.Application;
-import com.acodesmith.roshambo.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
@@ -11,7 +10,7 @@ public abstract class Card extends Image {
 
     public Card(String name, String counteredBy)
     {
-        super(AssetManager.getInstance().getRegionFromAtlas(name));
+        super(Application.Assets.<TextureAtlas>get("img/play.atlas").findRegion(name));
         this.setName(name);
         this.counteredBy = counteredBy;
     }
@@ -22,7 +21,8 @@ public abstract class Card extends Image {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj)
+    {
         if (this == obj) return true;
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
@@ -32,7 +32,8 @@ public abstract class Card extends Image {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         int prime = 31;
         int result = 1;
         result = prime * result + ((this.getName() == null) ? 0 : this.getName().hashCode());

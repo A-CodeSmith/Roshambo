@@ -1,145 +1,155 @@
 package com.acodesmith.roshambo.screens;
 
 import com.acodesmith.roshambo.Application;
-import com.acodesmith.roshambo.AssetManager;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
+import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader.FreeTypeFontLoaderParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 
-import java.util.concurrent.TimeUnit;
-
-/**
- * Created by Sylace on 3/18/2017.
- */
-public class LoadingScreen implements Screen {
+public class LoadingScreen extends BaseScreen {
 
     private final Application app;
-    private final AssetManager assets;
-
-    private ShapeRenderer shapeRenderer;
+    private float borderSize;
     private float progress;
+    private float progressBarHeight;
+    private float progressBarWidth;
+    private float progressBarX;
+    private float progressBarY;
+    private ShapeRenderer shapeRenderer;
 
     public LoadingScreen(Application app)
     {
         this.app = app;
-        this.assets = AssetManager.getInstance();
-        this.shapeRenderer = new ShapeRenderer();
+        shapeRenderer = new ShapeRenderer();
+        shapeRenderer.setProjectionMatrix(Application.Camera.combined);
+        progressBarWidth = Application.Camera.viewportWidth * .75f;
+        progressBarHeight = Application.Camera.viewportHeight * .1f;
+        progressBarX = (Application.Camera.viewportWidth - progressBarWidth) / 2;
+        progressBarY = (Application.Camera.viewportHeight - progressBarHeight) / 2;
+        borderSize = 10f;
     }
 
     @Override
-    public void show() {
-        this.progress = 0f;
-        shapeRenderer.setProjectionMatrix(app.camera.combined);
+    public void dispose()
+    {
+        this.shapeRenderer.dispose();
+        super.dispose();
+    }
+
+    @Override
+    public void render(float delta)
+    {
+        super.render(delta);
+        updateProgress();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.GRAY);
+        shapeRenderer.rect(
+                progressBarX,
+                progressBarY,
+                progressBarWidth,
+                progressBarHeight
+        );
+        shapeRenderer.setColor(Color.LIGHT_GRAY);
+        shapeRenderer.rect(
+                progressBarX + borderSize,
+                progressBarY + borderSize,
+                (progressBarWidth - borderSize*2) * progress,
+                progressBarHeight - borderSize*2
+        );
+        shapeRenderer.end();
+    }
+
+    @Override
+    public void show()
+    {
+        super.show();
+        progress = 0f;
         queueAssets();
     }
 
-    private void queueAssets() {
-        queueFonts();
-        queueImages();
+    private void advanceToSplashScreen()
+    {
+        app.setScreen(app.splashScreen);
     }
 
-    private void queueFonts() {
-        FileHandleResolver resolver = new InternalFileHandleResolver();
-        assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
-        assets.setLoader(BitmapFont.class, new FreetypeFontLoader(resolver));
+    private void queueAssets()
+    {
+        queueFonts();
+        queueImages();
+        queueMusic();
+        queueSounds();
+    }
 
-        FreetypeFontLoader.FreeTypeFontLoaderParameter logoParams = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+    private void queueFonts()
+    {
+        FileHandleResolver resolver = new InternalFileHandleResolver();
+        Application.Assets.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
+        Application.Assets.setLoader(BitmapFont.class, new FreetypeFontLoader(resolver));
+
+        FreeTypeFontLoaderParameter logoParams = new FreeTypeFontLoaderParameter();
         logoParams.fontFileName = "fonts/KGShePersisted.ttf";
         logoParams.fontParameters.size = 48;
         logoParams.fontParameters.color = Color.WHITE;
-        assets.load("fonts/KGShePersisted.ttf", BitmapFont.class, logoParams);
+        Application.Assets.load("fonts/KGShePersisted.ttf", BitmapFont.class, logoParams);
 
-        FreetypeFontLoader.FreeTypeFontLoaderParameter titleParams = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+        FreeTypeFontLoaderParameter titleParams = new FreeTypeFontLoaderParameter();
         titleParams.fontFileName = "fonts/Meatloaf.ttf";
         titleParams.fontParameters.size = 256;
         titleParams.fontParameters.color = Color.WHITE;
         titleParams.fontParameters.borderWidth = 5f;
         titleParams.fontParameters.borderColor = Color.BLACK;
-        assets.load("fonts/Meatloaf.ttf", BitmapFont.class, titleParams);
+        Application.Assets.load("fonts/Meatloaf.ttf", BitmapFont.class, titleParams);
 
-        FreetypeFontLoader.FreeTypeFontLoaderParameter mainParams = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
+        FreeTypeFontLoaderParameter mainParams = new FreeTypeFontLoaderParameter();
         mainParams.fontFileName = "fonts/GeosansLight.ttf";
         mainParams.fontParameters.size = 72;
         mainParams.fontParameters.color = Color.WHITE;
         mainParams.fontParameters.borderWidth = 2f;
         mainParams.fontParameters.borderColor = Color.BLACK;
-        assets.load("fonts/GeosansLight.ttf", BitmapFont.class, mainParams);
+        Application.Assets.load("fonts/GeosansLight.ttf", BitmapFont.class, mainParams);
     }
 
-    private void queueImages() {
-        assets.load("img/zuzu.png", Texture.class);
-        assets.load("img/bg.png", Texture.class);
-        assets.load("img/play.atlas", TextureAtlas.class);
+    private void queueImages()
+    {
+        Application.Assets.load("img/zuzu.png", Texture.class);
+        Application.Assets.load("img/bg.png", Texture.class);
+        Application.Assets.load("img/play.atlas", TextureAtlas.class);
     }
 
-    private void update(float delta) {
-        progress = MathUtils.lerp(progress, assets.getProgress(), .1f);
-        if (assets.update() && progress >= assets.getProgress() - 0.001f) {
-            app.setScreen(app.splashScreen);
+    private void queueMusic()
+    {
+        Application.Assets.load("music/boardwalkArcade.ogg", Music.class);
+        Application.Assets.load("music/magicClockShop.ogg", Music.class);
+    }
+
+    private void queueSounds()
+    {
+        Application.Assets.load("sound/coin.ogg", Sound.class);
+        Application.Assets.load("sound/drumRoll.ogg", Sound.class);
+        Application.Assets.load("sound/cheer.ogg", Sound.class);
+        Application.Assets.load("sound/awww.ogg", Sound.class);
+        Application.Assets.load("sound/murmur.ogg", Sound.class);
+    }
+
+    private void updateProgress()
+    {
+        // Intentionally slow the loading bar for demonstration purposes
+        float latestProgress = Application.Assets.getProgress();
+        progress = MathUtils.lerp(progress, latestProgress, .1f);
+        if (Application.Assets.update() && progress >= latestProgress - 0.001f)
+        {
+            advanceToSplashScreen();
         }
-    }
-
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 0.1f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        update(delta);
-
-        float progressBarWidth = app.camera.viewportWidth * .75f;
-        float progressBarHeight = app.camera.viewportHeight * .1f;
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(Color.GRAY);
-        shapeRenderer.rect(
-                app.camera.viewportWidth / 2 - progressBarWidth / 2,
-                app.camera.viewportHeight / 2 - progressBarHeight / 2,
-                progressBarWidth,
-                progressBarHeight);
-
-        shapeRenderer.setColor(Color.LIGHT_GRAY);
-        shapeRenderer.rect(
-                app.camera.viewportWidth / 2 - progressBarWidth / 2 + 10,
-                app.camera.viewportHeight / 2 - progressBarHeight / 2 + 10,
-                progressBarWidth * progress - 20,
-                progressBarHeight - 20);
-        shapeRenderer.end();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
-    public void dispose() {
-        this.shapeRenderer.dispose();
     }
 }

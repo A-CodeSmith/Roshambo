@@ -1,125 +1,86 @@
 package com.acodesmith.roshambo.screens;
 
 import com.acodesmith.roshambo.Application;
-import com.acodesmith.roshambo.AssetManager;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
 
-public class SplashScreen implements Screen {
+public class SplashScreen extends BaseScreen {
 
     private final Application app;
-    private Stage stage;
+    private Label companyLabel;
+    private Image companyLogo;
 
-    private Sound logoSound;
-
-    public SplashScreen(final Application app) {
+    public SplashScreen(Application app)
+    {
         this.app = app;
-        this.stage = new Stage(new FitViewport(Application.VIRTUAL_WIDTH, Application.VIRTUAL_HEIGHT, app.camera));
     }
 
     @Override
-    public void show() {
-        Gdx.input.setInputProcessor(stage);
+    public void show()
+    {
+        super.show();
+        int yOffset = 50;
 
-        logoSound = Gdx.audio.newSound(Gdx.files.internal("sound/coin.ogg"));
+        companyLogo = new Image(app.Assets.<Texture>get("img/zuzu.png"));
+        companyLogo.setPosition(
+                (getWidth() - companyLogo.getWidth())/2,
+                (getHeight() - companyLogo.getHeight())/2 + yOffset
+        );
+        companyLogo.setVisible(false);
 
-        final Image companyLogo = new Image(AssetManager.getInstance().getTexture("img/zuzu.png"));
-        companyLogo.setPosition(stage.getWidth() / 2 - companyLogo.getWidth() / 2, stage.getHeight() / 2 - companyLogo.getHeight() / 2 + 50);
-
-        Label.LabelStyle style = new Label.LabelStyle();
-        style.font = AssetManager.getInstance().getFont("fonts/KGShePersisted.ttf");
-        final Label companyLabel = new Label("Zuzu Studios", style);
-        companyLabel.setPosition(stage.getWidth() / 2, companyLogo.getY() - 50, Align.center);
+        companyLabel = new Label(
+                "Zuzu Studios",
+                new LabelStyle(app.Assets.get("fonts/KGShePersisted.ttf"), null)
+        );
+        companyLabel.setPosition(
+                getWidth()/2,
+                companyLogo.getY() -yOffset,
+                Align.center
+        );
         companyLabel.setVisible(false);
 
-        final Runnable showLabel = new Runnable() {
-            @Override
-            public void run() {
-                companyLabel.setVisible(true);
-            }
-        };
-        final Runnable fadeOutLabel = new Runnable() {
-            @Override
-            public void run() {
-                companyLabel.addAction(fadeOut(0.75f));
-            }
-        };
-        final Runnable transitionScreen = new Runnable() {
-            @Override
-            public void run() {
-                app.setScreen(app.mainMenuScreen);
-            }
-        };
+        addActor(companyLogo);
+        addActor(companyLabel);
+        addAction(sequence(
+                delay(0.5f),
+                run(this::showCompanyLogo),
+                delay(1.25f),
+                run(this::showCompanyLabel),
+                delay(3.25f),
+                run(this::advanceToMainMenu)
+        ));
+    }
 
+    private void advanceToMainMenu()
+    {
+        app.setScreen(app.mainMenuScreen);
+    }
+
+    private void showCompanyLabel()
+    {
+        app.Assets.<Sound>get("sound/coin.ogg").play();
+        companyLabel.setVisible(true);
+        companyLabel.addAction(sequence(
+                delay(2.5f),
+                fadeOut(0.75f)
+        ));
+    }
+
+    private void showCompanyLogo()
+    {
+        companyLogo.setVisible(true);
         companyLogo.addAction(sequence(
                 alpha(0f),
-                delay(0.5f),
                 fadeIn(1f, Interpolation.pow2),
-                delay(0.25f),
-                run(showLabel),
-                run(new Runnable() {
-                    @Override
-                    public void run() {
-                        logoSound.play();
-                    }
-                }),
-                delay(2.5f),
-                run(fadeOutLabel),
-                fadeOut(0.75f),
-                run(transitionScreen)));
-
-        stage.addActor(companyLogo);
-        stage.addActor(companyLabel);
-    }
-
-    @Override
-    public void render(float delta) {
-        Gdx.gl.glClearColor(.1f, .1f, .1f, 1f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        update(delta);
-
-        stage.draw();
-    }
-
-    public void update(float delta) {
-        stage.act(delta);
-    }
-
-    @Override
-    public void resize(int width, int height) {
-        stage.getViewport().update(width, height, false);
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
+                delay(2.75f),
+                fadeOut(0.75f)
+        ));
     }
 }

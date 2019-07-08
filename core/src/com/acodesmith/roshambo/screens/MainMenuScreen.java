@@ -1,12 +1,12 @@
 package com.acodesmith.roshambo.screens;
 
 import com.acodesmith.roshambo.Application;
-import com.acodesmith.roshambo.AssetManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -24,13 +24,13 @@ import static com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 public class MainMenuScreen implements Screen {
 
     private final Application app;
-    private Stage stage;
 
+    private Stage stage;
     private Music bgMusic;
 
     public MainMenuScreen(Application app){
         this.app = app;
-        this.stage = new Stage(new FitViewport(Application.VIRTUAL_WIDTH, Application.VIRTUAL_HEIGHT, app.camera));
+        this.stage = new Stage(new FitViewport(Application.VIRTUAL_WIDTH, Application.VIRTUAL_HEIGHT, Application.Camera));
     }
 
     @Override
@@ -38,13 +38,11 @@ public class MainMenuScreen implements Screen {
         stage.clear();
         Gdx.input.setInputProcessor(stage);
 
-        bgMusic = Gdx.audio.newMusic(Gdx.files.internal("music/boardwalkArcade.ogg"));
+        bgMusic = Application.Assets.get("music/boardwalkArcade.ogg");
         bgMusic.setLooping(true);
         bgMusic.play();
 
-        final AssetManager assets = AssetManager.getInstance();
-
-        final Image backgroundImage = new Image(assets.getTexture("img/bg.png"));
+        final Image backgroundImage = new Image(Application.Assets.<Texture>get("img/bg.png"));
         backgroundImage.setPosition(stage.getWidth()/2 - backgroundImage.getWidth()/2, stage.getHeight() - backgroundImage.getHeight());
         backgroundImage.addAction(alpha(0f));
         backgroundImage.addAction(parallel(
@@ -53,11 +51,11 @@ public class MainMenuScreen implements Screen {
         ));
         stage.addActor(backgroundImage);
 
-        final Label titleLabel = new Label("ROSHAMBO", new LabelStyle(assets.getFont("fonts/Meatloaf.ttf"), null));
+        final Label titleLabel = new Label("ROSHAMBO", new LabelStyle(Application.Assets.<BitmapFont>get("fonts/Meatloaf.ttf"), null));
         titleLabel.setPosition(stage.getWidth()/2, stage.getHeight() - 120, Align.center);
         stage.addActor(titleLabel);
 
-        final LabelStyle menuItemStyle = new LabelStyle(assets.getFont("fonts/GeosansLight.ttf"),  null);
+        final LabelStyle menuItemStyle = new LabelStyle(Application.Assets.<BitmapFont>get("fonts/GeosansLight.ttf"),  null);
         final Label playLabel = new Label("Play", menuItemStyle);
         playLabel.setPosition(stage.getWidth()/2 - 100, stage.getHeight()/2 + 20, Align.left);
         playLabel.addListener(new ClickListener(){
@@ -84,9 +82,7 @@ public class MainMenuScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClearColor(.1f, .1f, .1f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         update(delta);
-
         stage.draw();
     }
 
@@ -117,6 +113,5 @@ public class MainMenuScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-        bgMusic.dispose();
     }
 }
