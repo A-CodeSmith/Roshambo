@@ -27,10 +27,10 @@ public class SplashScreen extends BaseScreen {
     {
         super.show();
 
-        companyLogo = new Image(app.Assets.<Texture>get("img/zuzu.png"));
+        companyLogo = new Image(Application.Assets.<Texture>get("img/zuzu.png"));
         companyLogo.setVisible(false);
 
-        LabelStyle labelStyle = new LabelStyle(app.Assets.get("fonts/KGShePersisted.ttf"), null);
+        LabelStyle labelStyle = new LabelStyle(Application.Assets.get("fonts/KGShePersisted.ttf"), null);
         companyLabel = new Label("Zuzu Studios", labelStyle);
         companyLabel.setVisible(false);
 
@@ -54,12 +54,12 @@ public class SplashScreen extends BaseScreen {
 
     private void advanceToMainMenu()
     {
-        app.setScreen(app.mainMenuScreen);
+        app.ScreenManager.setScreen(GameScreen.MainMenu);
     }
 
     private void showCompanyLabel()
     {
-        app.Assets.<Sound>get("sound/coin.ogg").play();
+        Application.Assets.<Sound>get("sound/coin.ogg").play();
         companyLabel.setVisible(true);
         companyLabel.addAction(sequence(
                 delay(2.5f),

@@ -1,9 +1,6 @@
 package com.acodesmith.roshambo;
 
-import com.acodesmith.roshambo.screens.LoadingScreen;
-import com.acodesmith.roshambo.screens.MainMenuScreen;
-import com.acodesmith.roshambo.screens.PlayScreen;
-import com.acodesmith.roshambo.screens.SplashScreen;
+import com.acodesmith.roshambo.screens.*;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -18,30 +15,20 @@ public class Application extends Game {
 	public static final int VIRTUAL_HEIGHT = 720;
 
 	public static AssetManager Assets = new AssetManager();
-	public static OrthographicCamera Camera = new OrthographicCamera();
 
-	public LoadingScreen loadingScreen;
-	public SplashScreen splashScreen;
-	public MainMenuScreen mainMenuScreen;
-	public PlayScreen playScreen;
+	public OrthographicCamera Camera = new OrthographicCamera();
+	public ScreenManager ScreenManager = new ScreenManager(this);
 	
 	@Override
 	public void create ()
 	{
 		Camera.setToOrtho(false, VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
-
-		loadingScreen = new LoadingScreen(this);
-		splashScreen = new SplashScreen(this);
-		mainMenuScreen = new MainMenuScreen(this);
-		playScreen = new PlayScreen(this);
-
-		setScreen(loadingScreen);
+		ScreenManager.setScreen(GameScreen.Loading);
 	}
 
 	@Override
 	public void dispose ()
 	{
-		splashScreen.dispose();
 	}
 
 	@Override

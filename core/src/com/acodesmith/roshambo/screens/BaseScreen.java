@@ -9,9 +9,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public abstract class BaseScreen extends Stage implements Screen {
 
-    protected BaseScreen()
+    BaseScreen()
     {
-        super( new FitViewport(Application.VIRTUAL_WIDTH, Application.VIRTUAL_HEIGHT, Application.Camera ));
+        super( new FitViewport(Application.VIRTUAL_WIDTH, Application.VIRTUAL_HEIGHT, ((Application)Gdx.app.getApplicationListener()).Camera ));
     }
 
     @Override public void hide() {}

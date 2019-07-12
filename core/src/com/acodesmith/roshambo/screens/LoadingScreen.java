@@ -20,6 +20,7 @@ public class LoadingScreen extends BaseScreen {
 
     private final Application app;
     private float borderSize;
+    private boolean loadingComplete;
     private float progress;
     private float progressBarHeight;
     private float progressBarWidth;
@@ -31,12 +32,13 @@ public class LoadingScreen extends BaseScreen {
     {
         this.app = app;
         shapeRenderer = new ShapeRenderer();
-        shapeRenderer.setProjectionMatrix(Application.Camera.combined);
-        progressBarWidth = Application.Camera.viewportWidth * .75f;
-        progressBarHeight = Application.Camera.viewportHeight * .1f;
-        progressBarX = (Application.Camera.viewportWidth - progressBarWidth) / 2;
-        progressBarY = (Application.Camera.viewportHeight - progressBarHeight) / 2;
+        shapeRenderer.setProjectionMatrix(app.Camera.combined);
+        progressBarWidth = app.Camera.viewportWidth * .75f;
+        progressBarHeight = app.Camera.viewportHeight * .1f;
+        progressBarX = (app.Camera.viewportWidth - progressBarWidth) / 2;
+        progressBarY = (app.Camera.viewportHeight - progressBarHeight) / 2;
         borderSize = 10f;
+        loadingComplete = false;
     }
 
     @Override
@@ -68,6 +70,9 @@ public class LoadingScreen extends BaseScreen {
                 progressBarHeight - borderSize*2
         );
         shapeRenderer.end();
+
+        if (loadingComplete)
+            advanceToSplashScreen();
     }
 
     @Override
@@ -80,7 +85,7 @@ public class LoadingScreen extends BaseScreen {
 
     private void advanceToSplashScreen()
     {
-        app.setScreen(app.splashScreen);
+        app.ScreenManager.setScreen(GameScreen.Splash);
     }
 
     private void queueAssets()
@@ -149,7 +154,7 @@ public class LoadingScreen extends BaseScreen {
         progress = MathUtils.lerp(progress, latestProgress, .1f);
         if (Application.Assets.update() && progress >= latestProgress - 0.001f)
         {
-            advanceToSplashScreen();
+            loadingComplete = true;
         }
     }
 }

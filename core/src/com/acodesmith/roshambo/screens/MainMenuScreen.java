@@ -27,7 +27,7 @@ public class MainMenuScreen extends BaseScreen {
     public void show() {
         super.show();
 
-        music = app.Assets.get("music/boardwalkArcade.ogg");
+        music = Application.Assets.get("music/boardwalkArcade.ogg");
         music.setLooping(true);
         music.play();
 
@@ -61,7 +61,7 @@ public class MainMenuScreen extends BaseScreen {
     private void advanceToPlayScreen()
     {
         music.stop();
-        app.setScreen(app.playScreen);
+        app.ScreenManager.setScreen(GameScreen.Play);
     }
 
     private Table buildMenu()

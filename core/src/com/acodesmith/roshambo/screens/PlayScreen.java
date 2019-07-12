@@ -117,13 +117,13 @@ public class PlayScreen extends BaseScreen {
     private void onPlayAgain()
     {
         resultSound.stop();
-        app.setScreen(app.playScreen);
+        app.ScreenManager.setScreen(GameScreen.Play);
     }
 
     private void onQuitToMenu()
     {
         resultSound.stop();
-        app.setScreen(app.mainMenuScreen);
+        app.ScreenManager.setScreen(GameScreen.MainMenu);
     }
 
     private void showCountdown()
