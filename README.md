@@ -1,6 +1,9 @@
 # Roshambo
-A simple project, featuring the classic game 'Roshambo.'
+A simple project featuring the classic game 'Roshambo', also known as
+Paper, Rock, Scissors.
 
-The goal of this project is to showcase a basic application with graphics.
-It is cross platform; utilizing the LibGDX engine.
-Don't expect fancy architecture here.  Keep it straightforward and simple!
+The goal of this project is to showcase a basic, cross platform application
+with graphics. It utilizes the LibGDX graphics engine. The project
+architecture is intentionally kept simple for instructional purposes.
+
+The project can be compiled for both Desktop (.jar) and Android (.apk).
